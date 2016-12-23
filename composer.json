@@ -1,0 +1,5 @@
+{
+  "require": {
+    "graze/guzzle-jsonrpc": "~3.0"
+  }
+}
