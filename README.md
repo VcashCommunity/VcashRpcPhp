@@ -1,12 +1,11 @@
 # VcashRpcPhp
 
-PHP Library for Vcash rpc commands
+PHP Library for **Vcash** rpc commands
 
 Need running Vcash daemon, if you don't know what's it, do not use this library
 
-Install dependency JsonRpc lib
-
-`composer install`
+This library uses **JsonRpcClient** from **jsonrpcx-php** library
+https://github.com/jenolan/jsonrpcx-php/
 
 Usage example:
 

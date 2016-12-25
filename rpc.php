@@ -1,51 +1,48 @@
 <?php
-require __DIR__ . '/vendor/autoload.php';
-use Graze\GuzzleHttp\JsonRpc\Client;
 
-// composer install
+require_once 'JsonRpcClient.php';
 
 class VcashRpc {
 
     // General rpc caller
     private static function call_rpc($payload) {
         try {
-            // Create the client
-            $client = Client::factory('http://127.0.0.1:9195');
-            // Create a request
-            $request = $client->request(1, $payload->method, $payload->params);
-            $response = $client->send($request);
-            // JSON decode the line of data, get an associative array (option true)
-            $data = json_decode($response->getBody(), true);
+            // Use JsonRpcClient library from https://github.com/jenolan/jsonrpcx-php/
+            $serverUrl = 'http://127.0.0.1:9195';
+            $client = new JsonRpcClient($serverUrl);
+            $response = $client->call($payload->method, $payload->params, $payload->id);
+            // Decode the response
+            $data = json_decode($response, true);
             return $data;
-        } catch (RequestException $e) {
-            die($e->getResponse()->getRpcErrorMessage());
+        } catch (Exception $e) {
+            die($e->getMessage());
         }
     }
 
     public static function rpc_getinfo() {
         // getinfo
-        $payload = (object) ['method' => 'getinfo', 'params' => ['']];
+        $payload = (object) ['id'=> 1, 'method' => 'getinfo', 'params' => array()];
         return VcashRpc::call_rpc($payload);
     }
 
 
     public static function rpc_getbalance() {
-        # Get wallet balance
-        $payload = (object) ['method' => 'getbalance', 'params' => ['']];
+        # getbalance
+        $payload = (object) ['id'=> 1, 'method' => 'getbalance', 'params' => array()];
         return VcashRpc::call_rpc($payload);
     }
 
 
     public static function rpc_getnewaddress() {
-        # Get new vcash address
-        $payload = (object) ['method' => 'getnewaddress', 'params' => ['']];
+        # getnewaddress: Get new vcash address
+        $payload = (object) ['id'=> 1, 'method' => 'getnewaddress', 'params' => array()];
         return VcashRpc::call_rpc($payload);
     }
 
 
     public static function rpc_listtransactions() {
         # listtransactions
-        $payload = (object) ['method' => 'listtransactions', 'params' => ['']];
+        $payload = (object) ['id'=> 1, 'method' => 'listtransactions', 'params' => array()];
         return VcashRpc::call_rpc($payload);
     }
 
@@ -53,46 +50,44 @@ class VcashRpc {
     public static function rpc_listreceivedbyaddress() {
         # listreceivedbyaddress 1: received with minimum 1 confirmations
         $confirm_number = 1;
-        $payload = (object) ['method' => 'listreceivedbyaddress', 'params' => [$confirm_number]];
+        $payload = (object) ['id'=> 1, 'method' => 'listreceivedbyaddress', 'params' => array($confirm_number)];
         return VcashRpc::call_rpc($payload);
     }
 
 
     public static function rpc_gettransaction($txid) {
-        # gettransaction txid
-        $payload = (object) ['method' => 'gettransaction', 'params' => [$txid]];
+        # gettransaction
+        $payload = (object) ['id'=> 1, 'method' => 'gettransaction', 'params' => array($txid)];
         return VcashRpc::call_rpc($payload);
     }
 
-    // Get error src vcash file line 496 rpc_connection.cpp
-    // 460: bool rpc_connection::parse_json_rpc_request
-    // look at handle_json_rpc_request
-    // json_getblockcount
+
     public static function rpc_getblockcount() {
         # getblockcount
-        $payload = (object) ['method' => 'getblockcount', 'params' => []];
+        $payload = (object) ['id'=> 1, 'method' => 'getblockcount', 'params' => array()];
         return VcashRpc::call_rpc($payload);
     }
 
 
     public static function rpc_getdifficulty() {
         # getdifficulty
-        $payload = (object) ['method' => 'getdifficulty', 'params' => []];
+        $payload = (object) ['id'=> 1, 'method' => 'getdifficulty', 'params' => array()];
         return VcashRpc::call_rpc($payload);
     }
 
 
     public static function rpc_validateaddress($address) {
-        # validateaddress address
-        $payload = (object) ['method' => 'validateaddress', 'params' => [$address]];
+        # validateaddress
+        $payload = (object) ['id'=> 1, 'method' => 'validateaddress', 'params' => array($address)];
         return VcashRpc::call_rpc($payload);
     }
 
 
     public static function rpc_sendtoaddress($address, $amount) {
         // WARNING: USE WITH CAUTION
-        # sendtoaddress address, amount
-        $payload = (object) ['method' => 'sendtoaddress', 'params' => [$address, $amount]];
+        # sendtoaddress
+        // Do checks: address is valid and amount too.
+        $payload = (object) ['id'=> 1, 'method' => 'sendtoaddress', 'params' => array($address, $amount)];
         return VcashRpc::call_rpc($payload);
     }
 
