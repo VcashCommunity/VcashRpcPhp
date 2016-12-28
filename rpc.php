@@ -98,6 +98,7 @@ class VcashRpc {
         // Triple check: listreceivedbyaddress, listtransactions, gettransaction
         $amount = 0;
         $user_address = null;
+        $status_received = false;
         // Check if $address has received funds in recent transaction
         // parse listreceivedbyaddress look for $address
         $response = VcashRpc::rpc_listreceivedbyaddress();
@@ -123,7 +124,13 @@ class VcashRpc {
             }
         }
 
-        $data = array("house_address"=>$address, "user_address"=>$user_address ,"amount"=>$amount);
+        if ($amount > 0 && !empty($user_address)) {
+            $status_received = true;
+        }
+
+        $data = array("received"=>$status_received, "house_address"=>$address,
+            "user_address"=>$user_address , "amount"=>$amount);
         return $data;
     }
 }
+
