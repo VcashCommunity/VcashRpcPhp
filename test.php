@@ -8,7 +8,7 @@ header("Content-Type: application/json;charset=utf-8");
 /**
  * Request rpc class and functions
  */
-require_once 'rpc.php';
+require_once 'VcashRpc.php';
 
 echo "rpc_getinfo\n";
 echo json_encode(VcashRpc::rpc_getinfo(), JSON_PRETTY_PRINT);

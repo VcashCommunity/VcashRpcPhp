@@ -40,9 +40,10 @@ class VcashRpc {
     }
 
 
-    public static function rpc_listtransactions() {
+    public static function rpc_listtransactions($account="*", $count=80, $from=0) {
         # listtransactions
-        $payload = (object) ['id'=> 1, 'method' => 'listtransactions', 'params' => array()];
+        $params=array($account, $count, $from);
+        $payload = (object) ['id'=> 1, 'method' => 'listtransactions', 'params' => $params];
         return VcashRpc::call_rpc($payload);
     }
 
