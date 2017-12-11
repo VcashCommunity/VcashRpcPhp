@@ -2,10 +2,12 @@
 
 require_once 'JsonRpcClient.php';
 
-class VcashRpc {
+class VcashRpc
+{
 
     // General rpc caller
-    private static function call_rpc($payload) {
+    private static function call_rpc($payload)
+    {
         try {
             // Use JsonRpcClient library from https://github.com/jenolan/jsonrpcx-php/
             $serverUrl = 'http://127.0.0.1:9195';
@@ -19,81 +21,100 @@ class VcashRpc {
         }
     }
 
-    public static function rpc_getinfo() {
+    public static function rpc_getinfo()
+    {
         // getinfo
-        $payload = (object) ['id'=> 1, 'method' => 'getinfo', 'params' => array()];
+        $payload = (object)['id' => 1, 'method' => 'getinfo', 'params' => array()];
         return VcashRpc::call_rpc($payload);
     }
 
 
-    public static function rpc_getbalance() {
+    public static function rpc_getbalance()
+    {
         # getbalance
-        $payload = (object) ['id'=> 1, 'method' => 'getbalance', 'params' => array()];
+        $payload = (object)['id' => 1, 'method' => 'getbalance', 'params' => array()];
         return VcashRpc::call_rpc($payload);
     }
 
 
-    public static function rpc_getnewaddress() {
+    public static function rpc_getnewaddress()
+    {
         # getnewaddress: Get new vcash address
-        $payload = (object) ['id'=> 1, 'method' => 'getnewaddress', 'params' => array()];
+        $payload = (object)['id' => 1, 'method' => 'getnewaddress', 'params' => array()];
+        return VcashRpc::call_rpc($payload);
+    }
+
+    public static function rpc_listsinceblock($hash)
+    {
+        # listsinceblock
+        $params = array($hash);
+        $payload = (object)['id' => 1, 'method' => 'listsinceblock', 'params' => $params];
         return VcashRpc::call_rpc($payload);
     }
 
 
-    public static function rpc_listtransactions($account="*", $count=80, $from=0) {
+    public static function rpc_listtransactions($account = "*", $count = 80, $from = 0)
+    {
         # listtransactions
-        $params=array($account, $count, $from);
-        $payload = (object) ['id'=> 1, 'method' => 'listtransactions', 'params' => $params];
+        $params = array($account, $count, $from);
+        $payload = (object)['id' => 1, 'method' => 'listtransactions', 'params' => $params];
         return VcashRpc::call_rpc($payload);
     }
 
 
-    public static function rpc_listreceivedbyaddress() {
+    public static function rpc_listreceivedbyaddress()
+    {
         # listreceivedbyaddress 1: received with minimum 1 confirmations
         $confirm_number = 1;
-        $payload = (object) ['id'=> 1, 'method' => 'listreceivedbyaddress', 'params' => array($confirm_number)];
+        $payload = (object)['id' => 1, 'method' => 'listreceivedbyaddress', 'params' => array($confirm_number)];
         return VcashRpc::call_rpc($payload);
     }
 
 
-    public static function rpc_gettransaction($txid) {
+    public static function rpc_gettransaction($txid)
+    {
         # gettransaction
-        $payload = (object) ['id'=> 1, 'method' => 'gettransaction', 'params' => array($txid)];
+        $payload = (object)['id' => 1, 'method' => 'gettransaction', 'params' => array($txid)];
         return VcashRpc::call_rpc($payload);
     }
 
 
-    public static function rpc_getblockcount() {
+    public static function rpc_getblockcount()
+    {
         # getblockcount
-        $payload = (object) ['id'=> 1, 'method' => 'getblockcount', 'params' => array()];
+        $payload = (object)['id' => 1, 'method' => 'getblockcount', 'params' => array()];
         return VcashRpc::call_rpc($payload);
     }
 
 
-    public static function rpc_getdifficulty() {
+    public static function rpc_getdifficulty()
+    {
         # getdifficulty
-        $payload = (object) ['id'=> 1, 'method' => 'getdifficulty', 'params' => array()];
+        $payload = (object)['id' => 1, 'method' => 'getdifficulty', 'params' => array()];
         return VcashRpc::call_rpc($payload);
     }
 
 
-    public static function rpc_validateaddress($address) {
+    public static function rpc_validateaddress($address)
+    {
         # validateaddress
-        $payload = (object) ['id'=> 1, 'method' => 'validateaddress', 'params' => array($address)];
+        $payload = (object)['id' => 1, 'method' => 'validateaddress', 'params' => array($address)];
         return VcashRpc::call_rpc($payload);
     }
 
 
-    public static function rpc_sendtoaddress($address, $amount) {
+    public static function rpc_sendtoaddress($address, $amount)
+    {
         // WARNING: USE WITH CAUTION
         # sendtoaddress
         // Do checks: address is valid and amount too.
-        $payload = (object) ['id'=> 1, 'method' => 'sendtoaddress', 'params' => array($address, $amount)];
+        $payload = (object)['id' => 1, 'method' => 'sendtoaddress', 'params' => array($address, $amount)];
         return VcashRpc::call_rpc($payload);
     }
 
 
-    public static function check_received($address) {
+    public static function check_received($address)
+    {
         // Check if address has received funds from user
         // address is generated by rpc_getnewaddress() (New empty address)
         // Triple check: listreceivedbyaddress, listtransactions, gettransaction
@@ -129,8 +150,8 @@ class VcashRpc {
             $status_received = true;
         }
 
-        $data = array("received"=>$status_received, "house_address"=>$address,
-            "user_address"=>$user_address , "amount"=>$amount);
+        $data = array("received" => $status_received, "house_address" => $address,
+            "user_address" => $user_address, "amount" => $amount);
         return $data;
     }
 }
